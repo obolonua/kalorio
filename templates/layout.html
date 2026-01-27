@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fi">
+
+<head>
+  <meta charset="utf-8" />
+  <title>{% block title %}Kalorio{% endblock %}</title>
+  <!-- <link rel="stylesheet" href="/static/main.css" /> -->
+</head>
+
+<body>
+  <header>
+    <h1>Kalorio</h1>
+    <nav>
+      <a href="/">Etusivu</a>
+      {% if session.user_id %}
+      <a href="/dashboard">Koontinäyttö</a>
+      <a href="/entries/new">Lisää merkintä</a>
+      <a href="/logout">Kirjaudu ulos</a>
+      {% else %}
+      <!-- <a href="/login">Kirjaudu</a> -->
+      <!-- <a href="/register">Luo tunnus</a> -->
+      {% endif %}
+    </nav>
+  </header>
+
+  {% for message in get_flashed_messages() %}
+  <div class="flash">{{ message }}</div>
+  {% endfor %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+
+</html>
