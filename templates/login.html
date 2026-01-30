@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block title %}Kirjaudu sisään{% endblock %}
+
+{% block content %}
+<h2>Kirjaudu sisään</h2>
+<form method="post" action="/login">
+  <label for="username">Tunnus</label>
+  <input type="text" id="username" name="username" required />
+
+  <label for="password">Salasana</label>
+  <input type="password" id="password" name="password" required />
+
+  <button type="submit">Kirjaudu</button>
+</form>
+{% endblock %}
