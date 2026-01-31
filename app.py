@@ -64,3 +64,11 @@ def login():
     session["csrf_token"] = secrets.token_hex(16)
     flash("Tervetuloa takaisin!")
     return "Dashboard"
+
+@app.route("/logout")
+def logout():
+    session_keys = ["user_id", "username", "csrf_token"]
+    for key in session_keys:
+        session.pop(key, None)
+    flash("Olet kirjautunut ulos.")
+    return redirect(url_for("index"))
