@@ -1,5 +1,7 @@
 from flask import (Flask,render_template, request, flash, redirect, url_for, session)
 import sqlite3
+import entries
+import functools
 import secrets
 import config
 import users
@@ -11,6 +13,15 @@ app.config["SECRET_KEY"] = config.SECRET_KEY
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route("/dashboard")
+def dashboard():
+    user_id = session["user_id"]
+    entry_list = entries.get_entries(user_id)
+    total = entries.get_daily_total(user_id)
+    user = users.get_user(user_id)
+    return render_template("dashboard.html", entries=entry_list, total=total,
+                           goal=user.get("daily_goal") if user else None)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -63,7 +74,7 @@ def login():
     session["username"] = username
     session["csrf_token"] = secrets.token_hex(16)
     flash("Tervetuloa takaisin!")
-    return "Dashboard"
+    return redirect(url_for("dashboard"))
 
 @app.route("/logout")
 def logout():
