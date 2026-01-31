@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}Koontinäyttö{% endblock %}
+
+{% block content %}
+<h2>Koontinäyttö</h2>
+<p>Tervetuloa, {{ session.username }}!</p>
+<p>Kulutetut kalorit tänään: {{ total }}{% if goal %} / {{ goal }}{% endif %}</p>
+
+{% if entries %}
+<table>
+  <thead>
+    <tr>
+      <th>Pvm</th>
+      <th>Kuvaus</th>
+      <th>Kalorit</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for entry in entries %}
+    <tr>
+      <td>{{ entry.entry_date }}</td>
+      <td>{{ entry.description }}</td>
+      <td>{{ entry.calories }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>Et ole vielä kirjannut yhtään merkintää.</p>
+{% endif %}
+{% endblock %}
