@@ -18,3 +18,8 @@ def check_login(username, password):
     if check_password_hash(record["password_hash"], password):
         return record["id"]
     return None
+
+def get_user(user_id):
+    sql = "SELECT id, username, daily_goal FROM users WHERE id = ?"
+    result = db.query(sql, [user_id])
+    return dict(result[0]) if result else None
