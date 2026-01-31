@@ -1,5 +1,6 @@
-from flask import (Flask,render_template, request, flash, redirect, url_for)
+from flask import (Flask,render_template, request, flash, redirect, url_for, session)
 import sqlite3
+import secrets
 import config
 import users
 
@@ -44,3 +45,22 @@ def register():
 
     flash("Käyttäjä luotu. Kirjaudu sisään.")
     return redirect(url_for("login"))
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login.html")
+
+    username = request.form.get("username", "").strip()
+    password = request.form.get("password", "")
+
+    user_id = users.check_login(username, password)
+    if not user_id:
+        flash("Väärä tunnus tai salasana.")
+        return redirect(url_for("login"))
+
+    session["user_id"] = user_id
+    session["username"] = username
+    session["csrf_token"] = secrets.token_hex(16)
+    flash("Tervetuloa takaisin!")
+    return "Dashboard"
