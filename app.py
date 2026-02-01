@@ -9,12 +9,21 @@ import users
 app = Flask(__name__)
 app.config["SECRET_KEY"] = config.SECRET_KEY
 
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped(*args, **kwargs):
+        if "user_id" not in session:
+            flash("Kirjaudu sisään jatkaaksesi.")
+            return redirect(url_for("login"))
+        return view(*args, **kwargs)
+    return wrapped
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
 @app.route("/dashboard")
+@login_required
 def dashboard():
     user_id = session["user_id"]
     entry_list = entries.get_entries(user_id)
