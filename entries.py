@@ -2,13 +2,25 @@ from datetime import date
 
 import db
 
-def get_entries(user_id, limit=20):
-    sql = """SELECT id, entry_date, description, calories
+def get_entries(user_id, limit=20, entry_date=None, keyword=None):
+    clauses = ["user_id = ?"]
+    params = [user_id]
+
+    if entry_date:
+        clauses.append("entry_date = ?")
+        params.append(entry_date)
+
+    if keyword:
+        clauses.append("description LIKE ?")
+        params.append(f"%{keyword}%")
+
+    sql = f"""SELECT id, entry_date, description, calories
              FROM entries
-             WHERE user_id = ?
+             WHERE {" AND ".join(clauses)}
              ORDER BY entry_date DESC, id DESC
              LIMIT ?"""
-    rows = db.query(sql, [user_id, limit])
+    params.append(limit)
+    rows = db.query(sql, params)
     return [dict(row) for row in rows]
 
 

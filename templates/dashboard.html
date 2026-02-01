@@ -5,7 +5,17 @@
 {% block content %}
 <h2>Koontinäyttö</h2>
 <p>Tervetuloa, {{ session.username }}!</p>
-<p>Kulutetut kalorit tänään: {{ total }}{% if goal %} / {{ goal }}{% endif %}</p>
+<p>Kulutetut kalorit päivälle: {{ total }}{% if goal %} / {{ goal }}{% endif %}</p>
+
+<form class="search-form" method="get" action="{{ url_for('dashboard') }}">
+  <!-- <label for="entry_date">Päivämäärä</label>
+  <input type="date" id="entry_date" name="entry_date" value="{{ date_filter }}"> -->
+
+  <label for="search">Hae ruokaa</label>
+  <input type="search" id="search" name="search" value="{{ search_term }}" placeholder="Esim. kana, salaatti ...">
+
+  <button type="submit">Hae</button>
+</form>
 
 {% if entries %}
 <table>

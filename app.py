@@ -27,11 +27,24 @@ def index():
 @login_required
 def dashboard():
     user_id = session["user_id"]
-    entry_list = entries.get_entries(user_id)
-    total = entries.get_daily_total(user_id)
+    search_term = request.args.get("search", "").strip()
+    date_filter = request.args.get("entry_date") or date.today().isoformat()
+
+    entry_list = entries.get_entries(
+        user_id,
+        entry_date=date_filter,
+        keyword=search_term or None,
+    )
+    total = entries.get_daily_total(user_id, entry_date=date_filter)
     user = users.get_user(user_id)
-    return render_template("dashboard.html", entries=entry_list, total=total,
-                           goal=user.get("daily_goal") if user else None)
+    return render_template(
+        "dashboard.html",
+        entries=entry_list,
+        total=total,
+        goal=user.get("daily_goal") if user else None,
+        date_filter=date_filter,
+        search_term=search_term,
+    )
 
 @app.route("/entries/new", methods=["GET", "POST"])
 @login_required
