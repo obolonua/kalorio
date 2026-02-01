@@ -32,3 +32,15 @@ Backend: Flask
 Database: SQLite (or other relational database)
 
 Frontend: HTML, CSS, Jinja templates
+
+## Local setup
+
+1. Create and activate a virtual environment (e.g., `python -m venv venv` and `source venv/bin/activate`).
+2. Install dependencies: `pip install flask werkzeug`
+3. Create the SQLite database and tables: `sqlite3 kalorio.db < schema.sql` (this generates `kalorio.db` in the repo root; rerun the command if you want to reset the schema).
+
+## Launching the app
+
+1. Start the development server: `flask run`
+
+By default, the server listens on `http://127.0.0.1:5000`; visit `/register`, `/login`, or `/dashboard` once authenticated.
