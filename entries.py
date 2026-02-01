@@ -21,3 +21,9 @@ def get_daily_total(user_id, entry_date=None):
     if not result:
         return 0
     return result[0]["total"] or 0
+
+def add_entry(user_id, calories, description, entry_date=None):
+    entry_date = entry_date or date.today().isoformat()
+    sql = """INSERT INTO entries (user_id, entry_date, description, calories)
+             VALUES (?, ?, ?, ?)"""
+    db.execute(sql, [user_id, entry_date, description, calories])
