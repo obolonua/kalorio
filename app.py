@@ -99,6 +99,16 @@ def edit_entry(entry_id):
         flash("Merkintää ei löytynyt tai se ei kuulu sinulle.")
     return redirect(url_for("dashboard"))
 
+@app.route("/entries/<int:entry_id>/delete", methods=["POST"])
+@login_required
+def delete_entry(entry_id):
+
+    if entries.delete_entry(session["user_id"], entry_id):
+        flash("Merkintä poistettu.")
+    else:
+        flash("Merkintää ei löytynyt tai se ei kuulu sinulle.")
+    return redirect(url_for("dashboard"))
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():

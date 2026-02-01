@@ -53,3 +53,9 @@ def get_entry(user_id, entry_id):
              WHERE id = ? AND user_id = ?"""
     rows = db.query(sql, [entry_id, user_id])
     return dict(rows[0]) if rows else None
+
+def delete_entry(user_id, entry_id):
+    sql = """DELETE FROM entries
+             WHERE id = ? AND user_id = ?"""
+    cursor = db.execute(sql, [entry_id, user_id])
+    return cursor.rowcount > 0
