@@ -69,6 +69,36 @@ def new_entry():
     flash("Merkintä tallennettu.")
     return redirect(url_for("dashboard"))
 
+@app.route("/entries/<int:entry_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit_entry(entry_id):
+    user_id = session["user_id"]
+    entry = entries.get_entry(user_id, entry_id)
+    if not entry:
+        flash("Merkintää ei löytynyt.")
+        return redirect(url_for("dashboard"))
+
+    if request.method == "GET":
+        return render_template("edit_entry.html", entry=entry)
+
+    description = request.form.get("description", "").strip()
+    calories = request.form.get("calories")
+
+    if not calories or not calories.isdigit():
+        flash("Kalorimäärä tulee olla positiivinen kokonaisluku.")
+        return redirect(url_for("edit_entry", entry_id=entry_id))
+
+    calories_value = int(calories)
+    if calories_value <= 0:
+        flash("Kalorimäärän tulee olla suurempi kuin nolla.")
+        return redirect(url_for("edit_entry", entry_id=entry_id))
+
+    if entries.update_entry(user_id, entry_id, description, calories_value):
+        flash("Merkintä päivitetty.")
+    else:
+        flash("Merkintää ei löytynyt tai se ei kuulu sinulle.")
+    return redirect(url_for("dashboard"))
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():

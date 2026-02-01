@@ -32,6 +32,11 @@
       <td>{{ entry.entry_date }}</td>
       <td>{{ entry.description }}</td>
       <td>{{ entry.calories }}</td>
+      <td class="">
+        <form method="get" action="{{ url_for('edit_entry', entry_id=entry.id) }}">
+          <button type="submit">Muokkaa</button>
+        </form>
+      </td>
     </tr>
     {% endfor %}
   </tbody>

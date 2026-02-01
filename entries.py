@@ -39,3 +39,17 @@ def add_entry(user_id, calories, description, entry_date=None):
     sql = """INSERT INTO entries (user_id, entry_date, description, calories)
              VALUES (?, ?, ?, ?)"""
     db.execute(sql, [user_id, entry_date, description, calories])
+
+def update_entry(user_id, entry_id, description, calories):
+    sql = """UPDATE entries
+             SET description = ?, calories = ?
+             WHERE id = ? AND user_id = ?"""
+    cursor = db.execute(sql, [description, calories, entry_id, user_id])
+    return cursor.rowcount > 0
+
+def get_entry(user_id, entry_id):
+    sql = """SELECT id, entry_date, description, calories
+             FROM entries
+             WHERE id = ? AND user_id = ?"""
+    rows = db.query(sql, [entry_id, user_id])
+    return dict(rows[0]) if rows else None
