@@ -1,5 +1,6 @@
 from flask import (Flask,render_template, request, flash, redirect, url_for, session)
 import sqlite3
+from datetime import date
 import entries
 import functools
 import secrets
@@ -31,6 +32,29 @@ def dashboard():
     user = users.get_user(user_id)
     return render_template("dashboard.html", entries=entry_list, total=total,
                            goal=user.get("daily_goal") if user else None)
+
+@app.route("/entries/new", methods=["GET", "POST"])
+@login_required
+def new_entry():
+    if request.method == "GET":
+        return render_template("new_entry.html")
+
+    description = request.form.get("description", "").strip()
+    calories = request.form.get("calories")
+    entry_date = request.form.get("entry_date") or date.today().isoformat()
+
+    if not calories or not calories.isdigit():
+        flash("Kalorimäärä tulee olla positiivinen kokonaisluku.")
+        return redirect(url_for("new_entry"))
+
+    calories_value = int(calories)
+    if calories_value <= 0:
+        flash("Lisättävän kalorimäärän tulee olla suurempi kuin nolla.")
+        return redirect(url_for("new_entry"))
+
+    entries.add_entry(session["user_id"], calories_value, description, entry_date)
+    flash("Merkintä tallennettu.")
+    return redirect(url_for("dashboard"))
 
 
 @app.route("/register", methods=["GET", "POST"])
