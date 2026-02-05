@@ -1,0 +1,89 @@
+body {
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  background: #f4f4f4;
+}
+
+header {
+  background: #1d3557;
+  color: white;
+  padding: 1rem;
+}
+
+nav a {
+  color: #f1faee;
+  margin-right: 1rem;
+  text-decoration: none;
+}
+
+main {
+  padding: 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 400px;
+}
+
+input,
+button {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+button {
+  background: #457b9d;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td,
+th {
+  border: 1px solid #ccc;
+  padding: 0.4rem;
+  text-align: left;
+}
+
+.entry-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.entry-actions form {
+  margin: 0;
+}
+
+.entry-actions button {
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  background: #457b9d;
+  color: white;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.entry-actions button:hover {
+  background: #2e5985;
+}
+
+.flash {
+  background: #f1faee;
+  border: 1px solid #a8dadc;
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+}
