@@ -57,7 +57,9 @@ th {
 .entry-actions {
   display: flex;
   gap: 0.5rem;
+  justify-content: center;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 .entry-actions form {
