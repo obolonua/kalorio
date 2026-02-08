@@ -45,7 +45,11 @@
     {% endfor %}
   </tbody>
 </table>
-{% else %}
-<p>Et ole vielä kirjannut yhtään merkintää.</p>
-{% endif %}
+{%- else %}
+  {%- if search_term %}
+    <p>Hakuehdoillasi ei löydy merkintää.</p>
+  {%- else %}
+    <p>Et ole vielä kirjannut yhtään merkintää.</p>
+  {%- endif %}
+{%- endif %}
 {% endblock %}
