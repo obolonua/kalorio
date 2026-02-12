@@ -11,10 +11,10 @@
   <header>
     <h1>Kalorio</h1>
     <nav>
-      <a href="/">Etusivu</a>
       {% if session.user_id %}
-      <a href="/dashboard">Koontinäyttö</a>
-      <a href="/entries/new">Lisää merkintä</a>
+      <a href="/">Yhteisö</a>
+      <a href="/dashboard">Päiväkirja</a>
+      <a href="/entries/new">Lisää ruoka</a>
       <a href="/logout">Kirjaudu ulos</a>
       {% else %}
       <a href="/login">Kirjaudu</a>
