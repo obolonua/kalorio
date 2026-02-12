@@ -35,6 +35,7 @@
       <td>{{ entry.calories }}</td>
       <td>
         <div class="entry-actions">
+          <button type="button" class="publish-entry" aria-label="Julkaise merkintä">Julkaista</button>
           <form method="get" action="{{ url_for('edit_entry', entry_id=entry.id) }}">
             <button type="submit">Muokkaa</button>
           </form>

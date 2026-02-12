@@ -83,6 +83,10 @@ th {
   background: #2e5985;
 }
 
+.entry-actions button.publish-entry {
+  background: #2a9d8f;
+}
+
 .flash {
   background: #f1faee;
   border: 1px solid #a8dadc;
