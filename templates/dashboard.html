@@ -35,7 +35,10 @@
       <td>{{ entry.calories }}</td>
       <td>
         <div class="entry-actions">
-          <button type="button" class="publish-entry" aria-label="Julkaise merkintä">Julkaista</button>
+          <form method="post" action="{{ url_for('publish_entry', entry_id=entry.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            <button type="submit" class="publish-entry">Julkaista</button>
+          </form>
           <form method="get" action="{{ url_for('edit_entry', entry_id=entry.id) }}">
             <button type="submit">Muokkaa</button>
           </form>
