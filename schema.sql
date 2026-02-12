@@ -13,3 +13,14 @@ CREATE TABLE entries (
     calories INTEGER NOT NULL CHECK (calories > 0),
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE published_food (
+    id INTEGER PRIMARY KEY,
+    entry_id INTEGER NOT NULL REFERENCES entries(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    entry_date TEXT NOT NULL,
+    description TEXT,
+    calories INTEGER NOT NULL CHECK (calories > 0),
+    published_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(entry_id)
+);
