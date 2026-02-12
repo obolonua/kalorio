@@ -54,6 +54,26 @@ def get_entry(user_id, entry_id):
     rows = db.query(sql, [entry_id, user_id])
     return dict(rows[0]) if rows else None
 
+def publish_entry(user_id, entry_id):
+    entry = get_entry(user_id, entry_id)
+    if not entry:
+        return False
+
+    sql = """INSERT OR IGNORE INTO published_food
+             (entry_id, user_id, entry_date, description, calories)
+             VALUES (?, ?, ?, ?, ?)"""
+    cursor = db.execute(
+        sql,
+        [
+            entry_id,
+            user_id,
+            entry["entry_date"],
+            entry["description"],
+            entry["calories"],
+        ],
+    )
+    return cursor.rowcount > 0
+
 def delete_entry(user_id, entry_id):
     sql = """DELETE FROM entries
              WHERE id = ? AND user_id = ?"""
