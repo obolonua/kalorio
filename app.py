@@ -110,6 +110,16 @@ def delete_entry(entry_id):
     return redirect(url_for("dashboard"))
 
 
+@app.route("/entries/<int:entry_id>/publish", methods=["POST"])
+@login_required
+def publish_entry(entry_id):
+    if entries.publish_entry(session["user_id"], entry_id):
+        flash("Merkintä julkaistu.")
+    else:
+        flash("Merkintää ei löytynyt tai se on jo julkaistu.")
+    return redirect(url_for("dashboard"))
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
