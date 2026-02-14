@@ -1,4 +1,4 @@
-from flask import (Flask,render_template, request, flash, redirect, url_for, session)
+from flask import (Flask, render_template, request, flash, redirect, url_for, session, abort)
 import sqlite3
 from datetime import date
 import entries
@@ -18,6 +18,10 @@ def login_required(view):
             return redirect(url_for("login"))
         return view(*args, **kwargs)
     return wrapped
+
+def check_csrf():
+    if "csrf_token" not in session or session["csrf_token"] != request.form.get("csrf_token"):
+        abort(403)
 
 @app.route("/")
 def index():
@@ -52,6 +56,8 @@ def new_entry():
     if request.method == "GET":
         return render_template("new_entry.html")
 
+    check_csrf()
+
     description = request.form.get("description", "").strip()
     calories = request.form.get("calories")
     entry_date = request.form.get("entry_date") or date.today().isoformat()
@@ -81,6 +87,8 @@ def edit_entry(entry_id):
     if request.method == "GET":
         return render_template("edit_entry.html", entry=entry)
 
+    check_csrf()
+
     description = request.form.get("description", "").strip()
     calories = request.form.get("calories")
 
@@ -103,6 +111,8 @@ def edit_entry(entry_id):
 @login_required
 def delete_entry(entry_id):
 
+    check_csrf()
+
     if entries.delete_entry(session["user_id"], entry_id):
         flash("Merkintä poistettu.")
     else:
@@ -113,6 +123,7 @@ def delete_entry(entry_id):
 @app.route("/entries/<int:entry_id>/publish", methods=["POST"])
 @login_required
 def publish_entry(entry_id):
+    check_csrf()
     if entries.publish_entry(session["user_id"], entry_id):
         flash("Merkintä julkaistu.")
     else:
