@@ -5,6 +5,15 @@ CREATE TABLE users (
     daily_goal INTEGER
 );
 
+CREATE TABLE meal_categories (
+    value TEXT PRIMARY KEY,
+    label TEXT NOT NULL
+);
+
+INSERT INTO meal_categories (value, label) VALUES ('breakfast', 'Aamiainen');
+INSERT INTO meal_categories (value, label) VALUES ('lunch', 'Lounas');
+INSERT INTO meal_categories (value, label) VALUES ('dinner', 'Illallinen');
+
 CREATE TABLE entries (
     id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,

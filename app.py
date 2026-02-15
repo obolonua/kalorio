@@ -57,7 +57,7 @@ def new_entry():
     if request.method == "GET":
         return render_template(
             "new_entry.html",
-            categories=entries.CATEGORY_CHOICES,
+            categories=entries.get_category_choices(),
             selected_category=entries.DEFAULT_CATEGORY,
         )
 
@@ -100,7 +100,7 @@ def edit_entry(entry_id):
         return render_template(
             "edit_entry.html",
             entry=entry,
-            categories=entries.CATEGORY_CHOICES,
+            categories=entries.get_category_choices(),
         )
 
     check_csrf()

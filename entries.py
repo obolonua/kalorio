@@ -1,20 +1,39 @@
 from datetime import date
+from functools import lru_cache
 
 import db
 
-CATEGORY_CHOICES = [
-    ("breakfast", "Aamiainen"),
-    ("lunch", "Lounas"),
-    ("dinner", "Illallinen"),
-]
-CATEGORY_LABELS = {value: label for value, label in CATEGORY_CHOICES}
 DEFAULT_CATEGORY = "lunch"
+FALLBACK_CATEGORIES = [(DEFAULT_CATEGORY, "Lounas")]
+CATEGORY_QUERY = "SELECT value, label FROM meal_categories ORDER BY value"
+
+
+@lru_cache(maxsize=1)
+def _cached_category_data():
+    rows = db.query(CATEGORY_QUERY)
+    categories = [(row["value"], row["label"]) for row in rows]
+    if not categories:
+        categories = FALLBACK_CATEGORIES
+    labels = {value: label for value, label in categories}
+    return categories, labels
+
+
+def get_category_choices():
+    categories, _ = _cached_category_data()
+    return categories
+
+
+def _get_category_labels():
+    _, labels = _cached_category_data()
+    return labels
 
 
 def _normalize_category(category):
-    if category in CATEGORY_LABELS:
+    labels = _get_category_labels()
+    if category in labels:
         return category
     return DEFAULT_CATEGORY
+
 
 def get_entries(user_id, limit=20, entry_date=None, keyword=None):
     clauses = ["user_id = ?"]
@@ -35,12 +54,11 @@ def get_entries(user_id, limit=20, entry_date=None, keyword=None):
              LIMIT ?"""
     params.append(limit)
     rows = db.query(sql, params)
+    labels = _get_category_labels()
     entries = []
     for row in rows:
         entry = dict(row)
-        entry["category_label"] = CATEGORY_LABELS.get(
-            entry["category"], entry["category"]
-        )
+        entry["category_label"] = labels.get(entry["category"], entry["category"])
         entries.append(entry)
     return entries
 
@@ -54,6 +72,7 @@ def get_daily_total(user_id, entry_date=None):
     if not result:
         return 0
     return result[0]["total"] or 0
+
 
 def add_entry(user_id, calories, description, entry_date=None, category=None):
     entry_date = entry_date or date.today().isoformat()
@@ -82,7 +101,9 @@ def get_entry(user_id, entry_id):
     if not rows:
         return None
     entry = dict(rows[0])
-    entry["category_label"] = CATEGORY_LABELS.get(entry["category"], entry["category"])
+    entry["category_label"] = _get_category_labels().get(
+        entry["category"], entry["category"]
+    )
     return entry
 
 
@@ -118,12 +139,14 @@ def get_published_food(limit=20):
     LIMIT ?
     """
     rows = db.query(sql, [limit])
+    labels = _get_category_labels()
     result = []
     for row in rows:
         entry = dict(row)
-        entry["category_label"] = CATEGORY_LABELS.get(entry["category"], entry["category"])
+        entry["category_label"] = labels.get(entry["category"], entry["category"])
         result.append(entry)
     return result
+
 
 def delete_entry(user_id, entry_id):
     sql = """DELETE FROM entries
