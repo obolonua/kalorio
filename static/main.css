@@ -93,3 +93,13 @@ th {
   padding: 0.5rem;
   margin: 0.5rem 0;
 }
+
+.published-entry__comment-form {
+  max-width: 400px;
+}
+
+.published-entry__comment-form textarea,
+.published-entry__comment-form button {
+  width: 100%;
+  box-sizing: border-box;
+}

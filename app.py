@@ -34,8 +34,33 @@ def view_published_entry(published_id):
     entry = entries.get_published_entry(published_id)
     if not entry:
         abort(404)
-    return render_template("published_entry.html", entry=entry)
+    comments = entries.get_published_comments(published_id)
+    return render_template(
+        "published_entry.html",
+        entry=entry,
+        comments=comments,
+    )
 
+
+@app.route("/published/<int:published_id>/comment", methods=["POST"])
+@login_required
+def comment_published_entry(published_id):
+    entry = entries.get_published_entry(published_id)
+    if not entry:
+        abort(404)
+
+    check_csrf()
+
+    comment_text = request.form.get("comment", "").strip()
+    if not comment_text:
+        flash("Kommentti ei voi olla tyhjä.")
+        return redirect(url_for("view_published_entry", published_id=published_id))
+
+    if entries.add_published_comment(published_id, session["user_id"], comment_text):
+        flash("Kommentti tallennettu.")
+    else:
+        flash("Kommentin tallentaminen epäonnistui.")
+    return redirect(url_for("view_published_entry", published_id=published_id))
 
 @app.route("/dashboard")
 @login_required

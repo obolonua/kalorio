@@ -22,8 +22,43 @@
     </ul>
   </section>
 
-  <!-- <p class="published-entry__back">
-    <a href="{{ url_for('index') }}">← Takaisin yhteisöön</a>
-  </p> -->
 </article>
+
+<section class="published-entry__comments">
+  <h3>Kommentit</h3>
+
+  {% if comments %}
+  <ul class="published-entry__comment-list">
+    {% for comment in comments %}
+    <li class="published-entry__comment">
+      <p class="published-entry__comment-meta">
+        <strong>{{ comment.username }}</strong> / {{ comment.created_at }}
+      </p>
+      <p class="published-entry__comment-body">{{ comment.body }}</p>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>Kommentteja ei ole vielä julkaistu.</p>
+  {% endif %}
+
+  {% if session.user_id %}
+  <form
+    class="published-entry__comment-form"
+    method="post"
+    action="{{ url_for('comment_published_entry', published_id=entry.id) }}"
+  >
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <label>
+      <span>Jätä kommentti</span>
+      <textarea name="comment" rows="3" required></textarea>
+    </label>
+    <button type="submit">Lähetä</button>
+  </form>
+  {% else %}
+  <p>Kirjaudu sisään kommentoidaksesi.</p>
+  {% endif %}
+
+
+</section>
 {% endblock %}

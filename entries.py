@@ -147,6 +147,7 @@ def get_published_food(limit=20):
         result.append(entry)
     return result
 
+
 def get_published_entry(published_id):
     sql = """
     SELECT pf.id, pf.entry_id, pf.entry_date, pf.description, pf.calories,
@@ -161,6 +162,27 @@ def get_published_entry(published_id):
     entry = dict(rows[0])
     entry["category_label"] = _get_category_labels().get(entry["category"], entry["category"])
     return entry
+
+
+def get_published_comments(published_id):
+    sql = """
+    SELECT pc.id, pc.body, pc.created_at, u.username
+    FROM published_comments pc
+    JOIN users u ON pc.user_id = u.id
+    WHERE pc.published_id = ?
+    ORDER BY pc.created_at ASC
+    """
+    rows = db.query(sql, [published_id])
+    return [dict(row) for row in rows]
+
+
+def add_published_comment(published_id, user_id, body):
+    sql = """
+    INSERT INTO published_comments (published_id, user_id, body)
+    VALUES (?, ?, ?)
+    """
+    cursor = db.execute(sql, [published_id, user_id, body])
+    return cursor.rowcount > 0
 
 
 def delete_entry(user_id, entry_id):

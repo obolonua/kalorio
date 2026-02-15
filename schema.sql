@@ -35,3 +35,11 @@ CREATE TABLE published_food (
     published_at TEXT DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(entry_id)
 );
+
+CREATE TABLE published_comments (
+    id INTEGER PRIMARY KEY,
+    published_id INTEGER NOT NULL REFERENCES published_food(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    body TEXT NOT NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
