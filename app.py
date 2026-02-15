@@ -25,7 +25,8 @@ def check_csrf():
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    published_food = entries.get_published_food(limit=20)
+    return render_template("index.html", published_food=published_food)
 
 @app.route("/dashboard")
 @login_required

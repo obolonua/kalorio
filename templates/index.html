@@ -1,8 +1,36 @@
 {% extends "layout.html" %}
 
-{% block title %}Tervetuloa{% endblock %}
+{% block title %}Yhteisö{% endblock %}
 
 {% block content %}
-<h2>Tervetuloa Kalorioon</h2>
-<p>Kirjaudu sisään tai luo tunnus seuratakseen päivän kalorimääriä.</p>
+<h2>Yhteisö</h2>
+<p>Katsele muiden käyttäjien julkaisuja ja inspiroidu terveellisistä aterioista.</p>
+
+{% if published_food %}
+<table>
+  <thead>
+    <tr>
+      <th>Käyttäjä</th>
+      <th>Päivä</th>
+      <th>Ruoka</th>
+      <th>Kalorit</th>
+      <th>Julkaistu</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for entry in published_food %}
+    <tr>
+      <td>{{ entry.username }}</td>
+      <td>{{ entry.entry_date }}</td>
+      <td>{{ entry.description or "Ei kuvausta" }}</td>
+      <td>{{ entry.calories }}</td>
+      <td>{{ entry.published_at }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>Yhteisön yhteisiä julkaisuja ei ole vielä saatavilla. Julkaise oma merkintäsi päiväkirjasta.</p>
+{% endif %}
+
 {% endblock %}

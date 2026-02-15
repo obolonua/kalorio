@@ -74,6 +74,19 @@ def publish_entry(user_id, entry_id):
     )
     return cursor.rowcount > 0
 
+def get_published_food(limit=20):
+    sql = """
+    SELECT pf.id, pf.entry_date, pf.description, pf.calories,
+           pf.published_at, u.username
+    FROM published_food pf
+    JOIN users u ON pf.user_id = u.id
+    ORDER BY pf.published_at DESC
+    LIMIT ?
+    """
+    rows = db.query(sql, [limit])
+    return [dict(row) for row in rows]
+
+
 def delete_entry(user_id, entry_id):
     sql = """DELETE FROM entries
              WHERE id = ? AND user_id = ?"""
