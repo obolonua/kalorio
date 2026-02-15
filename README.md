@@ -21,6 +21,15 @@ Modify or remove meal entries to keep data accurate.
 📅 Date-based Tracking
 Calorie intake is organized by day for easy review.
 
+🌐 User Pages & Data Exploration
+User pages show statistics and the data items each user has added.
+
+🗂️ Data Classification
+A user can assign one or more classifications to a data item, with the available categories stored in the database.
+
+💬 Collaborative Notes
+A user can add additional information about another user's data item, and it is visible within the application (messages).
+
 🎯 Project Goal
 
 The goal of Kalorio is to provide a straightforward and user-friendly way to track calorie intake while serving as a practical project for learning application development concepts.
