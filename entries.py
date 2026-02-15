@@ -2,6 +2,20 @@ from datetime import date
 
 import db
 
+CATEGORY_CHOICES = [
+    ("breakfast", "Aamiainen"),
+    ("lunch", "Lounas"),
+    ("dinner", "Illallinen"),
+]
+CATEGORY_LABELS = {value: label for value, label in CATEGORY_CHOICES}
+DEFAULT_CATEGORY = "lunch"
+
+
+def _normalize_category(category):
+    if category in CATEGORY_LABELS:
+        return category
+    return DEFAULT_CATEGORY
+
 def get_entries(user_id, limit=20, entry_date=None, keyword=None):
     clauses = ["user_id = ?"]
     params = [user_id]
@@ -14,14 +28,21 @@ def get_entries(user_id, limit=20, entry_date=None, keyword=None):
         clauses.append("description LIKE ?")
         params.append(f"%{keyword}%")
 
-    sql = f"""SELECT id, entry_date, description, calories
+    sql = f"""SELECT id, entry_date, description, calories, category
              FROM entries
              WHERE {" AND ".join(clauses)}
              ORDER BY entry_date DESC, id DESC
              LIMIT ?"""
     params.append(limit)
     rows = db.query(sql, params)
-    return [dict(row) for row in rows]
+    entries = []
+    for row in rows:
+        entry = dict(row)
+        entry["category_label"] = CATEGORY_LABELS.get(
+            entry["category"], entry["category"]
+        )
+        entries.append(entry)
+    return entries
 
 
 def get_daily_total(user_id, entry_date=None):
@@ -34,25 +55,36 @@ def get_daily_total(user_id, entry_date=None):
         return 0
     return result[0]["total"] or 0
 
-def add_entry(user_id, calories, description, entry_date=None):
+def add_entry(user_id, calories, description, entry_date=None, category=None):
     entry_date = entry_date or date.today().isoformat()
-    sql = """INSERT INTO entries (user_id, entry_date, description, calories)
-             VALUES (?, ?, ?, ?)"""
-    db.execute(sql, [user_id, entry_date, description, calories])
+    category = _normalize_category(category)
+    sql = """INSERT INTO entries (user_id, entry_date, description, calories, category)
+             VALUES (?, ?, ?, ?, ?)"""
+    db.execute(sql, [user_id, entry_date, description, calories, category])
 
-def update_entry(user_id, entry_id, description, calories):
+
+def update_entry(user_id, entry_id, description, calories, category=None):
     sql = """UPDATE entries
-             SET description = ?, calories = ?
+             SET description = ?, calories = ?, category = ?
              WHERE id = ? AND user_id = ?"""
-    cursor = db.execute(sql, [description, calories, entry_id, user_id])
+    cursor = db.execute(
+        sql,
+        [description, calories, _normalize_category(category), entry_id, user_id],
+    )
     return cursor.rowcount > 0
 
+
 def get_entry(user_id, entry_id):
-    sql = """SELECT id, entry_date, description, calories
+    sql = """SELECT id, entry_date, description, calories, category
              FROM entries
              WHERE id = ? AND user_id = ?"""
     rows = db.query(sql, [entry_id, user_id])
-    return dict(rows[0]) if rows else None
+    if not rows:
+        return None
+    entry = dict(rows[0])
+    entry["category_label"] = CATEGORY_LABELS.get(entry["category"], entry["category"])
+    return entry
+
 
 def publish_entry(user_id, entry_id):
     entry = get_entry(user_id, entry_id)
@@ -60,8 +92,8 @@ def publish_entry(user_id, entry_id):
         return False
 
     sql = """INSERT OR IGNORE INTO published_food
-             (entry_id, user_id, entry_date, description, calories)
-             VALUES (?, ?, ?, ?, ?)"""
+             (entry_id, user_id, entry_date, description, calories, category)
+             VALUES (?, ?, ?, ?, ?, ?)"""
     cursor = db.execute(
         sql,
         [
@@ -70,13 +102,15 @@ def publish_entry(user_id, entry_id):
             entry["entry_date"],
             entry["description"],
             entry["calories"],
+            entry["category"],
         ],
     )
     return cursor.rowcount > 0
 
+
 def get_published_food(limit=20):
     sql = """
-    SELECT pf.id, pf.entry_date, pf.description, pf.calories,
+    SELECT pf.id, pf.entry_date, pf.description, pf.calories, pf.category,
            pf.published_at, u.username
     FROM published_food pf
     JOIN users u ON pf.user_id = u.id
@@ -84,8 +118,12 @@ def get_published_food(limit=20):
     LIMIT ?
     """
     rows = db.query(sql, [limit])
-    return [dict(row) for row in rows]
-
+    result = []
+    for row in rows:
+        entry = dict(row)
+        entry["category_label"] = CATEGORY_LABELS.get(entry["category"], entry["category"])
+        result.append(entry)
+    return result
 
 def delete_entry(user_id, entry_id):
     sql = """DELETE FROM entries

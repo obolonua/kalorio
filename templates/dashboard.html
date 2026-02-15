@@ -22,6 +22,7 @@
   <thead>
     <tr>
       <th>Pvm</th>
+      <th>Ateria</th>
       <th>Kuvaus</th>
       <th>Kalorit</th>
       <th>Toiminnot</th>
@@ -31,6 +32,7 @@
     {% for entry in entries %}
     <tr>
       <td>{{ entry.entry_date }}</td>
+      <td>{{ entry.category_label }}</td>
       <td>{{ entry.description }}</td>
       <td>{{ entry.calories }}</td>
       <td>

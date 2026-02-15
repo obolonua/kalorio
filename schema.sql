@@ -11,6 +11,7 @@ CREATE TABLE entries (
     entry_date TEXT NOT NULL,
     description TEXT,
     calories INTEGER NOT NULL CHECK (calories > 0),
+    category TEXT NOT NULL DEFAULT 'lunch',
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -21,6 +22,7 @@ CREATE TABLE published_food (
     entry_date TEXT NOT NULL,
     description TEXT,
     calories INTEGER NOT NULL CHECK (calories > 0),
+    category TEXT NOT NULL DEFAULT 'lunch',
     published_at TEXT DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(entry_id)
 );

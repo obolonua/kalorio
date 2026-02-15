@@ -13,6 +13,16 @@
   <label for="description">Kuvaus</label>
   <input type="text" id="description" name="description" />
 
+  <label for="category">Ateria</label>
+  <select id="category" name="category">
+    {% for value, label in categories %}
+    <option value="{{ value }}"
+      {% if value == selected_category %}selected{% endif %}>
+      {{ label }}
+    </option>
+    {% endfor %}
+  </select>
+
   <label for="calories">Kalorit</label>
   <input type="number" id="calories" name="calories" min="1" required />
 

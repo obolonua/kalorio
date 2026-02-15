@@ -12,6 +12,7 @@
     <tr>
       <th>Käyttäjä</th>
       <th>Päivä</th>
+      <th>Ateria</th>
       <th>Ruoka</th>
       <th>Kalorit</th>
       <th>Julkaistu</th>
@@ -22,6 +23,7 @@
     <tr>
       <td>{{ entry.username }}</td>
       <td>{{ entry.entry_date }}</td>
+      <td>{{ entry.category_label }}</td>
       <td>{{ entry.description or "Ei kuvausta" }}</td>
       <td>{{ entry.calories }}</td>
       <td>{{ entry.published_at }}</td>

@@ -55,13 +55,18 @@ def dashboard():
 @login_required
 def new_entry():
     if request.method == "GET":
-        return render_template("new_entry.html")
+        return render_template(
+            "new_entry.html",
+            categories=entries.CATEGORY_CHOICES,
+            selected_category=entries.DEFAULT_CATEGORY,
+        )
 
     check_csrf()
 
     description = request.form.get("description", "").strip()
     calories = request.form.get("calories")
     entry_date = request.form.get("entry_date") or date.today().isoformat()
+    category = request.form.get("category")
 
     if not calories or not calories.isdigit():
         flash("Kalorimäärä tulee olla positiivinen kokonaisluku.")
@@ -72,7 +77,13 @@ def new_entry():
         flash("Lisättävän kalorimäärän tulee olla suurempi kuin nolla.")
         return redirect(url_for("new_entry"))
 
-    entries.add_entry(session["user_id"], calories_value, description, entry_date)
+    entries.add_entry(
+        session["user_id"],
+        calories_value,
+        description,
+        entry_date,
+        category,
+    )
     flash("Merkintä tallennettu.")
     return redirect(url_for("dashboard"))
 
@@ -86,7 +97,11 @@ def edit_entry(entry_id):
         return redirect(url_for("dashboard"))
 
     if request.method == "GET":
-        return render_template("edit_entry.html", entry=entry)
+        return render_template(
+            "edit_entry.html",
+            entry=entry,
+            categories=entries.CATEGORY_CHOICES,
+        )
 
     check_csrf()
 
@@ -102,7 +117,8 @@ def edit_entry(entry_id):
         flash("Kalorimäärän tulee olla suurempi kuin nolla.")
         return redirect(url_for("edit_entry", entry_id=entry_id))
 
-    if entries.update_entry(user_id, entry_id, description, calories_value):
+    category = request.form.get("category")
+    if entries.update_entry(user_id, entry_id, description, calories_value, category):
         flash("Merkintä päivitetty.")
     else:
         flash("Merkintää ei löytynyt tai se ei kuulu sinulle.")

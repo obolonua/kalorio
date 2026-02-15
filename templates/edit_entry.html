@@ -13,6 +13,16 @@
   <label for="calories">Kalorit</label>
   <input id="calories" name="calories" type="number" min="1" value="{{ entry.calories }}">
 
+  <label for="category">Ateria</label>
+  <select id="category" name="category">
+    {% for value, label in categories %}
+    <option value="{{ value }}"
+      {% if value == entry.category %}selected{% endif %}>
+      {{ label }}
+    </option>
+    {% endfor %}
+  </select>
+
   <button type="submit">Tallenna muutokset</button>
   <a href="{{ url_for('dashboard') }}">Peruuta</a>
 </form>
