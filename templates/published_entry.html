@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}Julkaistu ateria{% endblock %}
+
+{% block content %}
+<article class="published-entry">
+  <header class="published-entry__header">
+    <h2>{{ entry.category_label }}</h2>
+    <p class="published-entry__meta">
+      Julkaissut {{ entry.username }} / {{ entry.published_at }}
+    </p>
+  </header>
+
+  <section>
+    <p class="published-entry__description">
+      {{ entry.description or "Ei kuvausta" }}
+    </p>
+
+    <ul class="published-entry__stats">
+      <li><strong>Päivä:</strong> {{ entry.entry_date }}</li>
+      <li><strong>Kalorit:</strong> {{ entry.calories }} kcal</li>
+    </ul>
+  </section>
+
+  <!-- <p class="published-entry__back">
+    <a href="{{ url_for('index') }}">← Takaisin yhteisöön</a>
+  </p> -->
+</article>
+{% endblock %}

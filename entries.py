@@ -147,6 +147,21 @@ def get_published_food(limit=20):
         result.append(entry)
     return result
 
+def get_published_entry(published_id):
+    sql = """
+    SELECT pf.id, pf.entry_id, pf.entry_date, pf.description, pf.calories,
+           pf.category, pf.published_at, u.username
+    FROM published_food pf
+    JOIN users u ON pf.user_id = u.id
+    WHERE pf.id = ?
+    """
+    rows = db.query(sql, [published_id])
+    if not rows:
+        return None
+    entry = dict(rows[0])
+    entry["category_label"] = _get_category_labels().get(entry["category"], entry["category"])
+    return entry
+
 
 def delete_entry(user_id, entry_id):
     sql = """DELETE FROM entries

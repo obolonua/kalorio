@@ -24,7 +24,11 @@
       <td>{{ entry.username }}</td>
       <td>{{ entry.entry_date }}</td>
       <td>{{ entry.category_label }}</td>
-      <td>{{ entry.description or "Ei kuvausta" }}</td>
+      <td>
+        <a href="{{ url_for('view_published_entry', published_id=entry.id) }}">
+          {{ entry.description or "Ei kuvausta" }}
+        </a>
+      </td>
       <td>{{ entry.calories }}</td>
       <td>{{ entry.published_at }}</td>
     </tr>

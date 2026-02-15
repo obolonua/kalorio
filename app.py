@@ -28,6 +28,15 @@ def index():
     published_food = entries.get_published_food(limit=20)
     return render_template("index.html", published_food=published_food)
 
+
+@app.route("/published/<int:published_id>")
+def view_published_entry(published_id):
+    entry = entries.get_published_entry(published_id)
+    if not entry:
+        abort(404)
+    return render_template("published_entry.html", entry=entry)
+
+
 @app.route("/dashboard")
 @login_required
 def dashboard():
