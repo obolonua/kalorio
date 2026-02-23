@@ -1,24 +1,16 @@
 {% extends "layout.html" %}
 
-{% block title %}Koontinäyttö{% endblock %}
+{% block title %}Päiväkirja{% endblock %}
 
 {% block content %}
-<h2>Koontinäyttö</h2>
+<h2>Päiväkirja</h2>
 <p>Tervetuloa, {{ session.username }}!</p>
 <p>Kulutetut kalorit päivälle: {{ total }}{% if goal %} / {{ goal }}{% endif %}</p>
 
-<form class="search-form" method="get" action="{{ url_for('dashboard') }}">
-  <!-- <label for="entry_date">Päivämäärä</label>
-  <input type="date" id="entry_date" name="entry_date" value="{{ date_filter }}"> -->
-
-  <label for="search">Hae ruokaa</label>
-  <input type="search" id="search" name="search" value="{{ search_term }}" placeholder="Esim. kana, salaatti ...">
-
-  <button type="submit">Hae</button>
-</form>
-
-{% if entries %}
-<table>
+<div class="dashboard-layout">
+  <section class="dashboard-main">
+    {% if entries %}
+    <table>
   <thead>
     <tr>
       <th>Pvm</th>
@@ -54,11 +46,41 @@
     {% endfor %}
   </tbody>
 </table>
-{%- else %}
-  {%- if search_term %}
-    <p>Hakuehdoillasi ei löydy merkintää.</p>
   {%- else %}
     <p>Et ole vielä kirjannut yhtään merkintää.</p>
   {%- endif %}
-{%- endif %}
+  </section>
+
+  <aside class="dashboard-sidebar">
+    <section class="calendar">
+      <div class="calendar-header">
+        <a class="button button--ghost" href="{{ url_for('dashboard', month=prev_month.isoformat()[:7]) }}">Edellinen</a>
+        <div class="calendar-title">{{ "%02d.%04d"|format(month_date.month, month_date.year) }}</div>
+        <a class="button button--ghost" href="{{ url_for('dashboard', month=next_month.isoformat()[:7]) }}">Seuraava</a>
+      </div>
+      <div class="calendar-grid">
+        <div class="calendar-weekday">Ma</div>
+        <div class="calendar-weekday">Ti</div>
+        <div class="calendar-weekday">Ke</div>
+        <div class="calendar-weekday">To</div>
+        <div class="calendar-weekday">Pe</div>
+        <div class="calendar-weekday">La</div>
+        <div class="calendar-weekday">Su</div>
+        {% for week in month_weeks %}
+          {% for day in week %}
+            {% set is_current = day.isoformat() == date_filter %}
+            {% set is_other_month = day.month != month_date.month %}
+            <a class="calendar-day{% if is_current %} is-selected{% endif %}{% if is_other_month %} is-outside{% endif %}"
+               href="{{ url_for('dashboard', entry_date=day.isoformat()) }}">
+              {{ day.day }}
+            </a>
+          {% endfor %}
+        {% endfor %}
+      </div>
+    </section>
+    <div class="dashboard-actions">
+      <a class="button" href="{{ url_for('new_entry', entry_date=date_filter) }}">Lisää ruoka</a>
+    </div>
+  </aside>
+</div>
 {% endblock %}

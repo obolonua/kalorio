@@ -8,7 +8,7 @@
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
 
   <label for="entry_date">Päivämäärä</label>
-  <input type="date" id="entry_date" name="entry_date" />
+  <input type="date" id="entry_date" name="entry_date" value="{{ entry_date }}" />
 
   <label for="description">Kuvaus</label>
   <input type="text" id="description" name="description" />

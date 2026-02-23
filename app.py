@@ -1,6 +1,7 @@
 from flask import (Flask, render_template, request, flash, redirect, url_for, session, abort)
 import sqlite3
-from datetime import date
+from datetime import date, timedelta
+import calendar
 import entries
 import functools
 import secrets
@@ -66,33 +67,51 @@ def comment_published_entry(published_id):
 @login_required
 def dashboard():
     user_id = session["user_id"]
-    search_term = request.args.get("search", "").strip()
     date_filter = request.args.get("entry_date") or date.today().isoformat()
+    month_param = request.args.get("month")
+    try:
+        if month_param:
+            year, month = [int(part) for part in month_param.split("-", 1)]
+            month_date = date(year, month, 1)
+        else:
+            month_date = date.fromisoformat(date_filter).replace(day=1)
+    except ValueError:
+        month_date = date.today().replace(day=1)
 
     entry_list = entries.get_entries(
         user_id,
         entry_date=date_filter,
-        keyword=search_term or None,
     )
     total = entries.get_daily_total(user_id, entry_date=date_filter)
     user = users.get_user(user_id)
+    cal = calendar.Calendar(firstweekday=0)
+    month_weeks = cal.monthdatescalendar(month_date.year, month_date.month)
+    prev_month = (month_date.replace(day=1) - timedelta(days=1)).replace(day=1)
+    next_month_year = month_date.year + (1 if month_date.month == 12 else 0)
+    next_month_month = 1 if month_date.month == 12 else month_date.month + 1
+    next_month = date(next_month_year, next_month_month, 1)
     return render_template(
         "dashboard.html",
         entries=entry_list,
         total=total,
         goal=user.get("daily_goal") if user else None,
         date_filter=date_filter,
-        search_term=search_term,
+        month_date=month_date,
+        month_weeks=month_weeks,
+        prev_month=prev_month,
+        next_month=next_month,
     )
 
 @app.route("/entries/new", methods=["GET", "POST"])
 @login_required
 def new_entry():
     if request.method == "GET":
+        entry_date = request.args.get("entry_date") or date.today().isoformat()
         return render_template(
             "new_entry.html",
             categories=entries.get_category_choices(),
             selected_category=entries.DEFAULT_CATEGORY,
+            entry_date=entry_date,
         )
 
     check_csrf()
@@ -119,7 +138,7 @@ def new_entry():
         category,
     )
     flash("Merkintä tallennettu.")
-    return redirect(url_for("dashboard"))
+    return redirect(url_for("dashboard", entry_date=entry_date))
 
 @app.route("/entries/<int:entry_id>/edit", methods=["GET", "POST"])
 @login_required

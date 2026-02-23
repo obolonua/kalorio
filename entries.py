@@ -35,17 +35,13 @@ def _normalize_category(category):
     return DEFAULT_CATEGORY
 
 
-def get_entries(user_id, limit=20, entry_date=None, keyword=None):
+def get_entries(user_id, limit=20, entry_date=None):
     clauses = ["user_id = ?"]
     params = [user_id]
 
     if entry_date:
         clauses.append("entry_date = ?")
         params.append(entry_date)
-
-    if keyword:
-        clauses.append("description LIKE ?")
-        params.append(f"%{keyword}%")
 
     sql = f"""SELECT id, entry_date, description, calories, category
              FROM entries
