@@ -7,34 +7,28 @@
 <p>Katsele muiden käyttäjien julkaisuja ja inspiroidu terveellisistä aterioista.</p>
 
 {% if published_food %}
-<table>
-  <thead>
-    <tr>
-      <th>Käyttäjä</th>
-      <th>Päivä</th>
-      <th>Ateria</th>
-      <th>Ruoka</th>
-      <th>Kalorit</th>
-      <th>Julkaistu</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for entry in published_food %}
-    <tr>
-      <td>{{ entry.username }}</td>
-      <td>{{ entry.entry_date }}</td>
-      <td>{{ entry.category_label }}</td>
-      <td>
+<ul class="published-list">
+  {% for entry in published_food %}
+  <li class="published-card">
+    <div class="published-card__main">
+      <h3 class="published-card__title">
         <a href="{{ url_for('view_published_entry', published_id=entry.id) }}">
           {{ entry.description or "Ei kuvausta" }}
         </a>
-      </td>
-      <td>{{ entry.calories }}</td>
-      <td>{{ entry.published_at }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+      </h3>
+      <p class="published-card__meta">
+        <span>{{ entry.username }}</span>
+        <span>{{ entry.entry_date }}</span>
+        <span>{{ entry.category_label }}</span>
+      </p>
+    </div>
+    <div class="published-card__stats">
+      <span class="published-card__calories">{{ entry.calories }} kcal</span>
+      <span class="published-card__published">{{ entry.published_at }}</span>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
 {% else %}
 <p>Yhteisön yhteisiä julkaisuja ei ole vielä saatavilla. Julkaise oma merkintäsi päiväkirjasta.</p>
 {% endif %}

@@ -10,42 +10,35 @@
 <div class="dashboard-layout">
   <section class="dashboard-main">
     {% if entries %}
-    <table>
-  <thead>
-    <tr>
-      <th>Pvm</th>
-      <th>Ateria</th>
-      <th>Kuvaus</th>
-      <th>Kalorit</th>
-      <th>Toiminnot</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for entry in entries %}
-    <tr>
-      <td>{{ entry.entry_date }}</td>
-      <td>{{ entry.category_label }}</td>
-      <td>{{ entry.description }}</td>
-      <td>{{ entry.calories }}</td>
-      <td>
-        <div class="entry-actions">
-          <form method="post" action="{{ url_for('publish_entry', entry_id=entry.id) }}">
-            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-            <button type="submit" class="publish-entry">Julkaista</button>
-          </form>
-          <form method="get" action="{{ url_for('edit_entry', entry_id=entry.id) }}">
-            <button type="submit">Muokkaa</button>
-          </form>
-          <form method="post" action="{{ url_for('delete_entry', entry_id=entry.id) }}">
-            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-            <button type="submit">Poista</button>
-          </form>
+    <ul class="entry-list">
+      {% for entry in entries %}
+      <li class="entry-card">
+        <div class="entry-card__main">
+          <div class="entry-card__header">
+            <span class="entry-card__date">{{ entry.entry_date }}</span>
+            <span class="entry-card__meal">{{ entry.category_label }}</span>
+          </div>
+          <p class="entry-card__description">{{ entry.description }}</p>
         </div>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+        <div class="entry-card__aside">
+          <span class="entry-card__calories">{{ entry.calories }} kcal</span>
+          <div class="entry-actions">
+            <form method="post" action="{{ url_for('publish_entry', entry_id=entry.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+              <button type="submit" class="publish-entry">Julkaista</button>
+            </form>
+            <form method="get" action="{{ url_for('edit_entry', entry_id=entry.id) }}">
+              <button type="submit">Muokkaa</button>
+            </form>
+            <form method="post" action="{{ url_for('delete_entry', entry_id=entry.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+              <button type="submit">Poista</button>
+            </form>
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
   {%- else %}
     <p>Et ole vielä kirjannut yhtään merkintää.</p>
   {%- endif %}
