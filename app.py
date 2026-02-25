@@ -11,6 +11,8 @@ import users
 app = Flask(__name__)
 app.config["SECRET_KEY"] = config.SECRET_KEY
 
+MAX_DESCRIPTION_LENGTH = 50
+
 @app.before_request
 def ensure_csrf_token():
     if "csrf_token" not in session:
@@ -28,6 +30,12 @@ def login_required(view):
 def check_csrf():
     if "csrf_token" not in session or session["csrf_token"] != request.form.get("csrf_token"):
         abort(403)
+
+def is_description_valid(description):
+    if len(description) > MAX_DESCRIPTION_LENGTH:
+        flash(f"Kuvauksen enimmäispituus on {MAX_DESCRIPTION_LENGTH} merkkiä.")
+        return False
+    return True
 
 @app.route("/")
 def index():
@@ -126,6 +134,9 @@ def new_entry():
     entry_date = request.form.get("entry_date") or date.today().isoformat()
     category = request.form.get("category")
 
+    if not is_description_valid(description):
+        return redirect(url_for("new_entry"))
+
     if not calories or not calories.isdigit():
         flash("Kalorimäärä tulee olla positiivinen kokonaisluku.")
         return redirect(url_for("new_entry"))
@@ -165,6 +176,9 @@ def edit_entry(entry_id):
 
     description = request.form.get("description", "").strip()
     calories = request.form.get("calories")
+
+    if not is_description_valid(description):
+        return redirect(url_for("edit_entry", entry_id=entry_id))
 
     if not calories or not calories.isdigit():
         flash("Kalorimäärä tulee olla positiivinen kokonaisluku.")
