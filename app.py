@@ -11,6 +11,11 @@ import users
 app = Flask(__name__)
 app.config["SECRET_KEY"] = config.SECRET_KEY
 
+@app.before_request
+def ensure_csrf_token():
+    if "csrf_token" not in session:
+        session["csrf_token"] = secrets.token_hex(16)
+
 def login_required(view):
     @functools.wraps(view)
     def wrapped(*args, **kwargs):
@@ -206,6 +211,8 @@ def register():
     if request.method == "GET":
         return render_template("register.html")
 
+    check_csrf()
+
     username = request.form.get("username", "").strip()
     password1 = request.form.get("password1", "")
     password2 = request.form.get("password2", "")
@@ -239,6 +246,8 @@ def login():
     if request.method == "GET":
         return render_template("login.html")
 
+    check_csrf()
+
     username = request.form.get("username", "").strip()
     password = request.form.get("password", "")
 
@@ -253,8 +262,9 @@ def login():
     flash("Tervetuloa takaisin!")
     return redirect(url_for("dashboard"))
 
-@app.route("/logout")
+@app.route("/logout", methods=["POST"])
 def logout():
+    check_csrf()
     session_keys = ["user_id", "username", "csrf_token"]
     for key in session_keys:
         session.pop(key, None)
