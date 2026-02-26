@@ -8,7 +8,7 @@
 <form method="post">
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
   <label for="description">Ruoka/kuvaus</label>
-  <input id="description" name="description" type="text" maxlength="50" value="{{ entry.description or '' }}">
+  <input id="description" name="description" type="text" maxlength="50" value="{{ entry.description or '' }}" required>
 
   <label for="calories">Kalorit</label>
   <input id="calories" name="calories" type="number" min="1" value="{{ entry.calories }}">

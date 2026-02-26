@@ -34,6 +34,9 @@ def check_csrf():
         abort(403)
 
 def is_description_valid(description):
+    if not description:
+        flash("Ruoka/kuvaus ei voi olla tyhjä.")
+        return False
     if len(description) > MAX_DESCRIPTION_LENGTH:
         flash(f"Kuvauksen enimmäispituus on {MAX_DESCRIPTION_LENGTH} merkkiä.")
         return False
