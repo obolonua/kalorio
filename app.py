@@ -1,5 +1,6 @@
 from flask import (Flask, render_template, request, flash, redirect, url_for, session, abort)
 import sqlite3
+import re
 from datetime import date, timedelta
 import calendar
 import entries
@@ -12,6 +13,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = config.SECRET_KEY
 
 MAX_DESCRIPTION_LENGTH = 50
+CALORIES_PATTERN = re.compile(r"^[1-9]\d{0,3}$")
 
 @app.before_request
 def ensure_csrf_token():
@@ -34,6 +36,12 @@ def check_csrf():
 def is_description_valid(description):
     if len(description) > MAX_DESCRIPTION_LENGTH:
         flash(f"Kuvauksen enimmäispituus on {MAX_DESCRIPTION_LENGTH} merkkiä.")
+        return False
+    return True
+
+def is_calories_valid(calories):
+    if not calories or not CALORIES_PATTERN.match(calories):
+        flash("Kalorimäärän tulee olla 1-4 numeron positiivinen kokonaisluku (1-9999).")
         return False
     return True
 
@@ -137,15 +145,10 @@ def new_entry():
     if not is_description_valid(description):
         return redirect(url_for("new_entry"))
 
-    if not calories or not calories.isdigit():
-        flash("Kalorimäärä tulee olla positiivinen kokonaisluku.")
+    if not is_calories_valid(calories):
         return redirect(url_for("new_entry"))
 
     calories_value = int(calories)
-    if calories_value <= 0:
-        flash("Lisättävän kalorimäärän tulee olla suurempi kuin nolla.")
-        return redirect(url_for("new_entry"))
-
     entries.add_entry(
         session["user_id"],
         calories_value,
@@ -180,15 +183,10 @@ def edit_entry(entry_id):
     if not is_description_valid(description):
         return redirect(url_for("edit_entry", entry_id=entry_id))
 
-    if not calories or not calories.isdigit():
-        flash("Kalorimäärä tulee olla positiivinen kokonaisluku.")
+    if not is_calories_valid(calories):
         return redirect(url_for("edit_entry", entry_id=entry_id))
 
     calories_value = int(calories)
-    if calories_value <= 0:
-        flash("Kalorimäärän tulee olla suurempi kuin nolla.")
-        return redirect(url_for("edit_entry", entry_id=entry_id))
-
     category = request.form.get("category")
     if entries.update_entry(user_id, entry_id, description, calories_value, category):
         flash("Merkintä päivitetty.")
