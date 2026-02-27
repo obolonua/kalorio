@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 
-{% block title %}Yhteisö{% endblock %}
+{% block title %}Käyttäjä {{ user.username }}{% endblock %}
 
 {% block content %}
-<h2>Yhteisö</h2>
-<p>Katsele muiden käyttäjien julkaisuja ja inspiroidu terveellisistä aterioista.</p>
+<h2>{{ user.username }}</h2>
+<p>Käyttäjän julkaistut ateriat.</p>
 
 {% if published_food %}
 <ul class="published-list">
@@ -17,9 +17,6 @@
         </a>
       </h3>
       <p class="published-card__meta">
-        <span>
-          <a href="{{ url_for('user_profile', username=entry.username) }}">{{ entry.username }}</a>
-        </span>
         <span>{{ entry.entry_date }}</span>
         <span>{{ entry.category_label }}</span>
       </p>
@@ -32,7 +29,7 @@
   {% endfor %}
 </ul>
 {% else %}
-<p>Yhteisön yhteisiä julkaisuja ei ole vielä saatavilla. Julkaise oma merkintäsi päiväkirjasta.</p>
+<p>Käyttäjä ei ole vielä julkaissut aterioita.</p>
 {% endif %}
 
 {% endblock %}

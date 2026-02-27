@@ -23,3 +23,9 @@ def get_user(user_id):
     sql = "SELECT id, username, daily_goal FROM users WHERE id = ?"
     result = db.query(sql, [user_id])
     return dict(result[0]) if result else None
+
+
+def get_user_by_username(username):
+    sql = "SELECT id, username, daily_goal FROM users WHERE username = ?"
+    result = db.query(sql, [username])
+    return dict(result[0]) if result else None

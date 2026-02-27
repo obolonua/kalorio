@@ -7,7 +7,9 @@
   <header class="published-entry__header">
     <h2>{{ entry.category_label }}</h2>
     <p class="published-entry__meta">
-      Julkaissut {{ entry.username }} / {{ entry.published_at }}
+      Julkaissut
+      <a href="{{ url_for('user_profile', username=entry.username) }}">{{ entry.username }}</a>
+      / {{ entry.published_at }}
     </p>
   </header>
 
@@ -32,7 +34,10 @@
     {% for comment in comments %}
     <li class="published-entry__comment">
       <p class="published-entry__comment-meta">
-        <strong>{{ comment.username }}</strong> / {{ comment.created_at }}
+        <strong>
+          <a href="{{ url_for('user_profile', username=comment.username) }}">{{ comment.username }}</a>
+        </strong>
+        / {{ comment.created_at }}
       </p>
       <p class="published-entry__comment-body">{{ comment.body }}</p>
     </li>

@@ -54,6 +54,15 @@ def index():
     return render_template("index.html", published_food=published_food)
 
 
+@app.route("/users/<username>")
+def user_profile(username):
+    user = users.get_user_by_username(username)
+    if not user:
+        abort(404)
+    published_food = entries.get_published_food_by_user(user["id"], limit=20)
+    return render_template("user.html", user=user, published_food=published_food)
+
+
 @app.route("/published/<int:published_id>")
 def view_published_entry(published_id):
     entry = entries.get_published_entry(published_id)

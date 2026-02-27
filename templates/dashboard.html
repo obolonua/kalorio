@@ -4,7 +4,10 @@
 
 {% block content %}
 <h2>Päiväkirja</h2>
-<p>Tervetuloa, {{ session.username }}!</p>
+<p>
+  Tervetuloa,
+  <a href="{{ url_for('user_profile', username=session.username) }}">{{ session.username }}</a>!
+</p>
 <p>Kulutetut kalorit päivälle: {{ total }}{% if goal %} / {{ goal }}{% endif %}</p>
 
 <div class="dashboard-layout">

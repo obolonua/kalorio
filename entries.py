@@ -128,7 +128,7 @@ def publish_entry(user_id, entry_id):
 def get_published_food(limit=20):
     sql = """
     SELECT pf.id, pf.entry_date, pf.description, pf.calories, pf.category,
-           pf.published_at, u.username
+           pf.published_at, u.username, u.id as user_id
     FROM published_food pf
     JOIN users u ON pf.user_id = u.id
     ORDER BY pf.published_at DESC
@@ -144,10 +144,30 @@ def get_published_food(limit=20):
     return result
 
 
+def get_published_food_by_user(user_id, limit=20):
+    sql = """
+    SELECT pf.id, pf.entry_date, pf.description, pf.calories, pf.category,
+           pf.published_at, u.username, u.id as user_id
+    FROM published_food pf
+    JOIN users u ON pf.user_id = u.id
+    WHERE pf.user_id = ?
+    ORDER BY pf.published_at DESC
+    LIMIT ?
+    """
+    rows = db.query(sql, [user_id, limit])
+    labels = _get_category_labels()
+    result = []
+    for row in rows:
+        entry = dict(row)
+        entry["category_label"] = labels.get(entry["category"], entry["category"])
+        result.append(entry)
+    return result
+
+
 def get_published_entry(published_id):
     sql = """
     SELECT pf.id, pf.entry_id, pf.entry_date, pf.description, pf.calories,
-           pf.category, pf.published_at, u.username
+           pf.category, pf.published_at, u.username, u.id as user_id
     FROM published_food pf
     JOIN users u ON pf.user_id = u.id
     WHERE pf.id = ?
@@ -162,7 +182,7 @@ def get_published_entry(published_id):
 
 def get_published_comments(published_id):
     sql = """
-    SELECT pc.id, pc.body, pc.created_at, u.username
+    SELECT pc.id, pc.body, pc.created_at, u.username, u.id as user_id
     FROM published_comments pc
     JOIN users u ON pc.user_id = u.id
     WHERE pc.published_id = ?
