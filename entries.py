@@ -35,6 +35,12 @@ def _normalize_category(category):
     return DEFAULT_CATEGORY
 
 
+def is_category_valid(category):
+    if not category:
+        return False
+    return category in _get_category_labels()
+
+
 def get_entries(user_id, limit=20, entry_date=None):
     clauses = ["user_id = ?"]
     params = [user_id]

@@ -48,6 +48,12 @@ def is_calories_valid(calories):
         return False
     return True
 
+def is_category_valid(category):
+    if not entries.is_category_valid(category):
+        flash("Aterian tulee olla Aamiainen, Lounas tai Illallinen.")
+        return False
+    return True
+
 @app.route("/")
 def index():
     published_food = entries.get_published_food(limit=20)
@@ -160,6 +166,9 @@ def new_entry():
     if not is_calories_valid(calories):
         return redirect(url_for("new_entry"))
 
+    if not is_category_valid(category):
+        return redirect(url_for("new_entry"))
+
     calories_value = int(calories)
     entries.add_entry(
         session["user_id"],
@@ -191,6 +200,7 @@ def edit_entry(entry_id):
 
     description = request.form.get("description", "").strip()
     calories = request.form.get("calories")
+    category = request.form.get("category")
 
     if not is_description_valid(description):
         return redirect(url_for("edit_entry", entry_id=entry_id))
@@ -199,7 +209,9 @@ def edit_entry(entry_id):
         return redirect(url_for("edit_entry", entry_id=entry_id))
 
     calories_value = int(calories)
-    category = request.form.get("category")
+    if not is_category_valid(category):
+        return redirect(url_for("edit_entry", entry_id=entry_id))
+
     if entries.update_entry(user_id, entry_id, description, calories_value, category):
         flash("Merkintä päivitetty.")
     else:
