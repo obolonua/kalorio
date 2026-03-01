@@ -264,6 +264,9 @@ def register():
     if password1 != password2:
         flash("Salasanat eivät täsmää.")
         return redirect(url_for("register"))
+    if len(password1) < 8:
+        flash("Salasanan täytyy olla vähintään 8 merkkiä.")
+        return redirect(url_for("register"))
 
     try:
         goal_value = int(goal) if goal else None
