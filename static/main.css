@@ -410,3 +410,22 @@ th {
   width: 100%;
   box-sizing: border-box;
 }
+
+.published-entry__comments,
+.published-entry__comment-list {
+  max-width: 50vw;
+  width: 100%;
+}
+
+.published-entry__comment-body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (max-width: 800px) {
+  .published-entry__comments,
+  .published-entry__comment-list {
+    max-width: 100%;
+  }
+}
