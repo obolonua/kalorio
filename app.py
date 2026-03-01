@@ -257,6 +257,9 @@ def register():
     if not username:
         flash("Kirjautumistunnus ei voi olla tyhjä.")
         return redirect(url_for("register"))
+    if len(username) < 6:
+        flash("Kirjautumistunnuksen täytyy olla vähintään 6 merkkiä.")
+        return redirect(url_for("register"))
 
     if password1 != password2:
         flash("Salasanat eivät täsmää.")
