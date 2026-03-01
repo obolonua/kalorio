@@ -29,3 +29,9 @@ def get_user_by_username(username):
     sql = "SELECT id, username, daily_goal FROM users WHERE username = ?"
     result = db.query(sql, [username])
     return dict(result[0]) if result else None
+
+
+def update_daily_goal(user_id, goal):
+    sql = "UPDATE users SET daily_goal = ? WHERE id = ?"
+    cursor = db.execute(sql, [goal, user_id])
+    return cursor.rowcount > 0

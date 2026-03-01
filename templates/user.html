@@ -4,6 +4,34 @@
 
 {% block content %}
 <h2>{{ user.username }}</h2>
+
+<section class="user-goal">
+  <h3>Päivittäinen tavoite</h3>
+  {% if user.daily_goal %}
+  <p>Tavoite: {{ user.daily_goal }} kcal</p>
+  {% else %}
+  <p>Tavoite: Ei asetettu</p>
+  {% endif %}
+
+  {% if session.get("username") == user.username %}
+  <form method="post" action="{{ url_for('update_daily_goal', username=user.username) }}">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <label for="daily_goal">Aseta tai muokkaa tavoitetta</label>
+    <input
+      id="daily_goal"
+      name="daily_goal"
+      type="number"
+      inputmode="numeric"
+      min="1"
+      max="9999"
+      placeholder="Esim. 2000"
+      value="{{ user.daily_goal or '' }}"
+    >
+    <button type="submit">Tallenna</button>
+  </form>
+  {% endif %}
+</section>
+
 <p>Käyttäjän julkaistut ateriat.</p>
 
 {% if published_food %}

@@ -69,6 +69,33 @@ def user_profile(username):
     return render_template("user.html", user=user, published_food=published_food)
 
 
+@app.route("/users/<username>/goal", methods=["POST"])
+@login_required
+def update_daily_goal(username):
+    user = users.get_user_by_username(username)
+    if not user:
+        abort(404)
+    if user["id"] != session.get("user_id"):
+        abort(403)
+
+    check_csrf()
+
+    goal = request.form.get("daily_goal", "").strip()
+    if goal:
+        if not CALORIES_PATTERN.match(goal):
+            flash("Päivittäisen tavoitteen tulee olla 1-4 numeron positiivinen kokonaisluku (1-9999).")
+            return redirect(url_for("user_profile", username=username))
+        goal_value = int(goal)
+    else:
+        goal_value = None
+
+    if users.update_daily_goal(user["id"], goal_value):
+        flash("Päivittäinen tavoite päivitetty.")
+    else:
+        flash("Päivittäisen tavoitteen päivitys epäonnistui.")
+    return redirect(url_for("user_profile", username=username))
+
+
 @app.route("/published/<int:published_id>")
 def view_published_entry(published_id):
     entry = entries.get_published_entry(published_id)

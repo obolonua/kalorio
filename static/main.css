@@ -199,6 +199,23 @@ th {
   gap: 0.75rem;
 }
 
+.user-goal {
+  margin: 1rem 0 1.5rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #dfe7ee;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(29, 53, 87, 0.06);
+}
+
+.user-goal h3 {
+  margin: 0 0 0.5rem;
+}
+
+.user-goal form {
+  margin-top: 0.5rem;
+}
+
 .published-card {
   display: flex;
   justify-content: space-between;
