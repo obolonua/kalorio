@@ -14,7 +14,6 @@
       {% if session.user_id %}
       <a href="/">Yhteisö</a>
       <a href="/dashboard">Päiväkirja</a>
-      <a href="/entries/new">Lisää ruoka</a>
       <form method="post" action="/logout" class="logout-form">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
         <button type="submit">Kirjaudu ulos</button>
