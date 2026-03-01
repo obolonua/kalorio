@@ -30,9 +30,26 @@ A user can assign one or more classifications to a data item, with the available
 💬 Collaborative Notes
 A user can add additional information about another user's data item, and it is visible within the application (messages).
 
+📰 Community Feed
+Browse the latest published meals from all users on the front page.
+
+📣 Publish Meals
+Publish a logged meal to make it visible in the community feed.
+
+🗨️ Comments
+Leave comments on published meals.
+
+🎯 Daily Goal Management
+Set or update a personal daily calorie goal from the user profile.
+
+🗓️ Calendar Navigation
+Navigate by date and month to review daily logs.
+
 🎯 Project Goal
 
 The goal of Kalorio is to provide a straightforward and user-friendly way to track calorie intake while serving as a practical project for learning application development concepts.
+
+We aimed to cover all the grade 4 requirements as the final target.
 
 🛠️ Tech Stack
 
